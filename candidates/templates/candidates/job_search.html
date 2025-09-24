@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Buscar Vagas - Candidato{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h1><i class="fas fa-search me-2"></i>Buscar Vagas</h1>
+        </div>
+    </div>
+    
+    <!-- Search Filters -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-filter me-2"></i>Filtros de Busca</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Buscar por palavra-chave</label>
+                                    <input type="text" name="q" class="form-control" placeholder="Ex: Python, Django, Frontend..." value="{{ search_query }}">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo de Contrato</label>
+                                    <select name="job_type" class="form-select">
+                                        <option value="">Todos</option>
+                                        {% for code, name in job_type_choices %}
+                                            <option value="{{ code }}" {% if job_type == code %}selected{% endif %}>{{ name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Modelo de Trabalho</label>
+                                    <select name="work_model" class="form-select">
+                                        <option value="">Todos</option>
+                                        {% for code, name in work_model_choices %}
+                                            <option value="{{ code }}" {% if work_model == code %}selected{% endif %}>{{ name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Cidade</label>
+                                    <input type="text" name="city" class="form-control" placeholder="Ex: São Paulo, Rio de Janeiro..." value="{{ city }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6 d-flex align-items-end">
+                                <div class="mb-3">
+                                    <button type="submit" class="btn btn-primary me-2">
+                                        <i class="fas fa-search me-2"></i>Buscar
+                                    </button>
+                                    <a href="{% url 'candidates:job_search' %}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-times me-2"></i>Limpar Filtros
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Job Results -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4>Vagas Encontradas ({{ jobs|length }})</h4>
+                <a href="{% url 'candidates:dashboard' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Voltar ao Dashboard
+                </a>
+            </div>
+            
+            {% if jobs %}
+                {% for job in jobs %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5 class="card-title">
+                                    {{ job.title }}
+                                    <span class="badge bg-{% if job.job_type == 'clt' %}success{% elif job.job_type == 'pj' %}info{% else %}warning{% endif %} ms-2">
+                                        {{ job.get_job_type_display }}
+                                    </span>
+                                </h5>
+                                <h6 class="card-subtitle mb-2 text-muted">{{ job.company.company_name }}</h6>
+                                <p class="card-text">{{ job.description|truncatewords:30|striptags }}</p>
+                                
+                                <div class="mb-2">
+                                    <small class="text-muted">
+                                        <i class="fas fa-map-marker-alt me-1"></i>{{ job.city }}, {{ job.state }}
+                                        <span class="ms-3"><i class="fas fa-briefcase me-1"></i>{{ job.get_experience_level_display }}</span>
+                                        <span class="ms-3"><i class="fas fa-home me-1"></i>{{ job.get_work_model_display }}</span>
+                                    </small>
+                                </div>
+                                
+                                {% if job.salary_min or job.salary_max %}
+                                <div class="mb-2">
+                                    <small class="text-success">
+                                        <i class="fas fa-dollar-sign me-1"></i>
+                                        {% if job.salary_min and job.salary_max %}
+                                            R$ {{ job.salary_min|floatformat:0 }} - R$ {{ job.salary_max|floatformat:0 }}
+                                        {% elif job.salary_min %}
+                                            A partir de R$ {{ job.salary_min|floatformat:0 }}
+                                        {% else %}
+                                            Até R$ {{ job.salary_max|floatformat:0 }}
+                                        {% endif %}
+                                    </small>
+                                </div>
+                                {% endif %}
+                                
+                                {% if job.required_skills.all %}
+                                <div class="mb-2">
+                                    <small class="text-muted">
+                                        <strong>Habilidades:</strong>
+                                        {% for skill in job.required_skills.all|slice:":5" %}
+                                            <span class="badge bg-light text-dark me-1">{{ skill.skill_name }}</span>
+                                        {% endfor %}
+                                        {% if job.required_skills.count > 5 %}
+                                            <span class="text-muted">+{{ job.required_skills.count|add:"-5" }} mais</span>
+                                        {% endif %}
+                                    </small>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4 d-flex flex-column justify-content-between">
+                                <div class="text-end">
+                                    <small class="text-muted">
+                                        Publicada em {{ job.created_at|date:"d/m/Y" }}
+                                    </small>
+                                </div>
+                                <div class="text-end mt-3">
+                                    <button class="btn btn-outline-primary btn-sm me-2" title="Ver Detalhes">
+                                        <i class="fas fa-eye"></i> Ver Detalhes
+                                    </button>
+                                    <button class="btn btn-success btn-sm" title="Candidatar-se">
+                                        <i class="fas fa-paper-plane"></i> Candidatar-se
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                
+                {% if jobs|length == 0 and search_query %}
+                <div class="text-center py-5">
+                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">Nenhuma vaga encontrada</h4>
+                    <p class="text-muted">Tente usar palavras-chave diferentes ou ajuste os filtros de busca.</p>
+                </div>
+                {% endif %}
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-briefcase fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">Nenhuma vaga disponível no momento</h4>
+                    <p class="text-muted">Novas oportunidades aparecem regularmente. Volte em breve!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
