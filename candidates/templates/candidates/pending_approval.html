@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Conta Pendente - Candidato{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0"><i class="fas fa-hourglass-half me-2"></i>Conta Pendente de Aprovação</h4>
+                </div>
+                <div class="card-body text-center">
+                    <i class="fas fa-clock fa-4x text-warning mb-4"></i>
+                    <h5>Sua conta está sendo revisada</h5>
+                    <p class="lead">
+                        Obrigado por se cadastrar no Sistema Carneiro Ramalho! 
+                        Sua conta de candidato está sendo revisada por nossos administradores.
+                    </p>
+                    <p>
+                        Você receberá um e-mail quando sua conta for aprovada e poderá acessar 
+                        todas as funcionalidades da plataforma, incluindo:
+                    </p>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Buscar e candidatar-se a vagas</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Gerenciar seu perfil profissional</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Acompanhar suas candidaturas</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Receber notificações de vagas</li>
+                    </ul>
+                    <hr>
+                    <p class="text-muted">
+                        <small>
+                            Este processo normalmente leva até 24 horas. 
+                            Se tiver alguma dúvida, entre em contato conosco.
+                        </small>
+                    </p>
+                    <a href="{% url 'accounts:logout' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-sign-out-alt me-2"></i>Sair
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

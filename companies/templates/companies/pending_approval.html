@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Conta Pendente - Empresa{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0"><i class="fas fa-hourglass-half me-2"></i>Empresa Pendente de Aprovação</h4>
+                </div>
+                <div class="card-body text-center">
+                    <i class="fas fa-building fa-4x text-warning mb-4"></i>
+                    <h5>Sua empresa está sendo revisada</h5>
+                    <p class="lead">
+                        Obrigado por cadastrar sua empresa no Sistema Carneiro Ramalho! 
+                        Sua conta está sendo revisada por nossos administradores.
+                    </p>
+                    <p>
+                        Você receberá um e-mail quando sua empresa for aprovada e poderá acessar 
+                        todas as funcionalidades da plataforma, incluindo:
+                    </p>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Publicar vagas de emprego</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Gerenciar candidatos no pipeline</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Visualizar perfis de candidatos</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Relatórios de recrutamento</li>
+                    </ul>
+                    <hr>
+                    <p class="text-muted">
+                        <small>
+                            Este processo normalmente leva até 24 horas. Verificamos os dados da empresa 
+                            para garantir a segurança de todos os usuários da plataforma.
+                        </small>
+                    </p>
+                    <a href="{% url 'accounts:logout' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-sign-out-alt me-2"></i>Sair
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
